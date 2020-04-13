@@ -1,3 +1,4 @@
+
 <h1 align="center">
     <img src="https://raw.githubusercontent.com/Rocketseat/bootcamp-gostack-desafio-02/master/.github/logo.png" >
 </h1>
@@ -22,13 +23,14 @@ Para executar este projeto todo, você precisa ter os pacotes instalados:
 
 # :pushpin: Backend
 
-- API RESTFUL created with Node.js using [express](https://expressjs.com/pt-br/).
+- API RESTFUL criada com Node.js utilizando [express](https://expressjs.com/pt-br/).
 
-- For database use PostgresSQL with [sequelize](https://sequelize.org/v5/).
+- Para o Banco de Dados usado PostgresSQL com [sequelize](https://sequelize.org/v5/).
 
 ## ⚡️ 
 
 - Para Usar está API você precisa ter o PostgresSQL, instalador[Docker](https://www.docker.com/)
+
 -Se você não deseja instalar o DOCKER, use o convencional [Postgres](https://www.postgresql.org/download/)
 
 ### Rodando Postgres com DOCKER: 🐋
@@ -44,6 +46,7 @@ $ docker start "NOME DO CONTAINER"
 ```
 
 - Para Atualizações em segundo Plano utilizo o Redis junto ao DOCKER.
+
 - Faça a Instalação de Redis [Redis](https://chocolatey.org/packages/redis-64) via [Chocolatey](https://chocolatey.org/docs/installation) .
 
 ### Utilizando Redis com DOCKER: 🐋
@@ -88,7 +91,7 @@ $ yarn start
 ```
 (Obs: Lembre de Deixar em Services/api a mesma do BackEnd)
 
-### :boom: FrontEnd
+### :boom: Mobile
 
 
 - Para rodar o Mobile

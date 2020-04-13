@@ -20,12 +20,15 @@ import rangeHour from '../../utils/rangeHour';
 class DeliveriesController {
   async index(req, res) {
     const { id } = req.params;
+    const { page = 1 } = req.query;
 
     const deliveryman = await Deliveryman.findByPk(id);
 
     if (!deliveryman) {
       return res.status(401).json({ error: 'Delivery man not found.' });
     }
+
+    const countDeliveries = await Order.count();
 
     const deliveries = await Order.findAll({
       where: {
@@ -35,15 +38,20 @@ class DeliveriesController {
           [Op.ne]: null,
         },
       },
-      attributes: ['product', 'start_date', 'end_date'],
+      attributes: ['id', 'product', 'start_date', 'end_date'],
       include: [
         {
           model: Recipient,
           as: 'recipient',
-          attributes: ['name', 'zipcode'],
+          attributes: ['name', 'city'],
         },
       ],
+      order: [['end_date', 'DESC']],
+      limit: 5,
+      offset: (page - 1) * 5,
     });
+
+    res.header('X-Total-Count', countDeliveries);
 
     return res.json(deliveries);
   }

@@ -10,7 +10,7 @@ class DeliverymanController {
 
     const deliveryman = await Deliveryman.findOne({
       where: { id: deliverymanId },
-      attributes: ['id', 'avatar_id', 'name', 'email'],
+      attributes: ['id', 'avatar_id', 'name', 'email', 'created_at'],
       include: [
         {
           model: File,
@@ -29,6 +29,8 @@ class DeliverymanController {
   async index(req, res) {
     const { name, page = 1 } = req.query;
 
+    const count = await Deliveryman.count();
+
     const deliverymen = await Deliveryman.findAll({
       where: {
         name: {
@@ -44,10 +46,11 @@ class DeliverymanController {
       ],
       attributes: ['id', 'name', 'email'],
       order: [['created_at', 'DESC']],
-      limit: 20,
-      offset: (page - 1) * 20,
+      limit: 5,
+      offset: (page - 1) * 5,
     });
 
+    res.header('X-Total-Count', count);
     return res.json(deliverymen);
   }
 

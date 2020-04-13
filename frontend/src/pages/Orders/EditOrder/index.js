@@ -8,9 +8,9 @@ import { updateOrderRequest } from '~/store/modules/order/actions';
 
 export default function EditOrder() {
   const schema = Yup.object().shape({
-    recipient_id: Yup.number().required('Informe o detinatário'),
-    deliveryman_id: Yup.number().required('Informe o entregador'),
-    product: Yup.number().required('O produto é obrigatório'),
+    recipient_id: Yup.number().required('Informe o Detinatário'),
+    deliveryman_id: Yup.number().required('Informe o Entregador'),
+    product: Yup.number().required('O produto é Obrigatório'),
   });
   const details = useSelector(state => state.order.details);
 
@@ -22,7 +22,7 @@ export default function EditOrder() {
 
   return (
     <OrderForm
-      title="Edição de encomendas"
+      title="Edição de Encomendas"
       onSubmit={handleSubmit}
       schema={schema}
       initialData={details}

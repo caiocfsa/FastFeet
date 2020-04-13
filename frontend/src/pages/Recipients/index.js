@@ -3,34 +3,71 @@ import React, { useState, useEffect } from 'react';
 
 import { MdSearch, MdAdd } from 'react-icons/md';
 
+import { confirmAlert } from 'react-confirm-alert';
+import { toast } from 'react-toastify';
+
 import { Container } from './styles';
 
 import RecipientItem from './RecipientItem';
 import ShimmerLoader from '~/components/ShimmerLoader';
 import EmptyList from '~/components/EmptyList';
 import Header from '~/components/Header';
+import ConfirmBox from '~/components/ConfirmBox';
+import Pagination from '~/components/Pagination';
 
 import api from '~/services/api';
 import history from '~/services/history';
 
 export default function Recipients() {
+  const labels = ['ID', 'Nome', 'Endereço', 'Ações'];
+
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
   const [recipients, setRecipients] = useState([]);
+  const [lengthRecipient, setLengthDeliverymen] = useState(0);
+
+  async function loadRecipients(page) {
+    setLoading(true);
+    const response = await api.get('/recipients', {
+      params: {
+        name,
+        page,
+      },
+    });
+    setLengthDeliverymen(response.data.length);
+    setRecipients(response.data);
+    setLoading(false);
+  }
+
+  function handleDelete(id) {
+    confirmAlert({
+      // eslint-disable-next-line react/prop-types
+      customUI: ({ onClose }) => (
+        <ConfirmBox
+          onClose={onClose}
+          handleConfirm={async () => {
+            try {
+              const response = await api.delete(`/recipients/${id}`);
+              setRecipients(
+                recipients.filter(recipient => recipient.id !== id)
+              );
+              toast.success(response.data.msg);
+
+              onClose();
+            } catch ({ response }) {
+              toast.error(response.data.error);
+              onClose();
+            }
+          }}
+        />
+      ),
+    });
+  }
 
   useEffect(() => {
-    async function loadRecipients() {
-      setLoading(true);
-      const response = await api.get('/recipients', {
-        params: {
-          name,
-        },
-      });
-      setRecipients(response.data);
-      setLoading(false);
-    }
-    loadRecipients();
-  }, [name]);
+    loadRecipients(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Container>
@@ -42,7 +79,7 @@ export default function Recipients() {
             <MdSearch size={16} color="#999" />
             <input
               type="text"
-              placeholder="Buscar por encomendas"
+              placeholder="Buscar Encomendas"
               onChange={e => setName(e.target.value)}
             />
           </div>
@@ -63,27 +100,22 @@ export default function Recipients() {
             <>
               <thead>
                 <tr>
-                  <th>
-                    <strong>ID</strong>
-                  </th>
-                  <th>
-                    <strong>Nome</strong>
-                  </th>
-                  <th>
-                    <strong>Endereço</strong>
-                  </th>
-
-                  <th>
-                    <div>
-                      <strong>Ações</strong>
-                    </div>
-                  </th>
+                  {labels.map(label => (
+                    <th key={label}>
+                      <strong>{label}</strong>
+                    </th>
+                  ))}
                 </tr>
               </thead>
-              <RecipientItem recipients={recipients} />
+              {recipients.map(recipient => (
+                <RecipientItem recipient={recipient} onDelete={handleDelete} />
+              ))}
             </>
           )}
         </table>
+      )}
+      {recipients.length > 0 && (
+        <Pagination loadItems={loadRecipients} itemsLenght={lengthRecipient} />
       )}
     </Container>
   );

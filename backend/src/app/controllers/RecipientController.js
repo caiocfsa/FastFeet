@@ -15,8 +15,8 @@ class RecipientController {
       },
       attributes: ['id', 'name', 'number', 'street', 'city', 'region'],
       order: [['created_at', 'DESC']],
-      limit: 20,
-      offset: (page - 1) * 20,
+      limit: 5,
+      offset: (page - 1) * 5,
     });
 
     return res.json(recipients);
@@ -24,6 +24,8 @@ class RecipientController {
 
   async show(req, res) {
     const { recipientId } = req.params;
+
+    const count = await Recipient.count();
 
     const recipient = await Recipient.findByPk(recipientId, {
       attributes: [
@@ -40,6 +42,8 @@ class RecipientController {
     if (!recipient) {
       return res.status(400).json({ error: 'Recipient cannot exists.' });
     }
+
+    res.header('X-Total-Count', count);
 
     return res.json(recipient);
   }

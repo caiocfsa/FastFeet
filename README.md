@@ -3,65 +3,62 @@
 </h1>
 
 <h2 align="center">
-    FastFeet, The future of parcel deliveries! 📫 🚚💨
+    FastFeet, A Tecnologia Mais Rapída em suas Entregas!  🚚
 </h2>
 
-<h3 align="center">
-    Your order treated with great affection. 💌
-</h3>
 
-# Cloning this project
+# Clonando Este Projeto
 
 ```
-$ git clone https://github.com/RennanD/fastfeet.git
+$ git clone https://github.com/caiocfsa/FastFeet.git
 ```
 
-# ❗️ Requisites
+# :warning: Requisitos 
 
-To runed this all project, you need have be the packages installed:
+Para executar este projeto todo, você precisa ter os pacotes instalados:
 
 - [Node.js](https://nodejs.org/en/)
-- [Yarn](https://legacy.yarnpkg.com/en/) (Optional).
+- [Yarn](https://legacy.yarnpkg.com/en/)
 
-# 💾 Backend
+# :pushpin: Backend
 
 - API RESTFUL created with Node.js using [express](https://expressjs.com/pt-br/).
 
 - For database use PostgresSQL with [sequelize](https://sequelize.org/v5/).
 
-## ⚡️ Start
+## ⚡️ 
 
-- For use this api you need have be installed PostgresSQL, I'm use [Docker](https://www.docker.com/), but this is optional.
-- If you don't want installing DOCKER, use convencional [Postgres](https://www.postgresql.org/download/) installation.
+- Para Usar está API você precisa ter o PostgresSQL, instalador[Docker](https://www.docker.com/)
+-Se você não deseja instalar o DOCKER, use o convencional [Postgres](https://www.postgresql.org/download/)
 
-### Runing Postgres using DOCKER: 🐋
-
-```
-$ docker run --name some-postgres -e POSTGRES_PASSWORD=mysecretpassword -d postgres
-```
-
-#### If you already have a container with Postgres, run:
+### Rodando Postgres com DOCKER: 🐋
 
 ```
-$ docker start "CONTAINER DOCKER ID"
+$ docker run --name some-postgres -e POSTGRES_PASSWORD=suasenha -d postgres
 ```
 
-- For background jobs I'm using Redis with DOCKER.
-- If you don't want installing DOCKER, use convencional installation of [Redis](https://redis.io/) .
+#### Se você já possui um contêiner no Postgres, execute:
 
-### Runing Redis using DOCKER: 🐋
+```
+$ docker start "NOME DO CONTAINER"
+```
+
+- Para Atualizações em segundo Plano utilizo o Redis junto ao DOCKER.
+- Faça a Instalação de Redis [Redis](https://chocolatey.org/packages/redis-64) via [Chocolatey](https://chocolatey.org/docs/installation) .
+
+### Utilizando Redis com DOCKER: 🐋
 
 ```
 $ docker run --name some-redis -d redis
 ```
 
-#### If you already have a container with Rerdis, run:
+#### Se você já possui um contêiner com o Redis, execute:
 
 ```
-$ docker start "CONTAINER DOCKER ID"
+$ docker start "NOME DO CONTAINER"
 ```
 
-### Now in your terminal, run:
+### Em um novo Terminal Execute:
 
 ```
 $ cd backend
@@ -77,8 +74,36 @@ $ yarn sequelize db:seed:all
 $ yarn dev
 ```
 
-#### To debugin, run:
+### :boom: FrontEnd
+
+
+- Para rodar o FrontEnd
 
 ```
-yarn dev:debug
+$ cd frontend
+
+$ yarn
+
+$ yarn start
 ```
+(Obs: Lembre de Deixar em Services/api a mesma do BackEnd)
+
+### :boom: FrontEnd
+
+
+- Para rodar o Mobile
+
+Utilize um Emulador Android ou IOS rodando.
+
+```
+$ cd Mobile
+
+$ yarn
+
+$ yarn start
+
+$ yarn android ou $ yarn ios
+
+```
+(Obs: Lembre de Deixar em Services/api a mesma do BackEnd)
+

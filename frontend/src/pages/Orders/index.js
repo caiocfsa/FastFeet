@@ -1,7 +1,9 @@
-/* eslint-disable react/prop-types */
 import React, { useState, useEffect } from 'react';
 
 import { MdAdd, MdSearch } from 'react-icons/md';
+
+import { confirmAlert } from 'react-confirm-alert';
+import { toast } from 'react-toastify';
 
 import { Container } from './styles';
 
@@ -9,30 +11,73 @@ import OrderItem from './OrderItem';
 import ShimmerLoader from '~/components/ShimmerLoader';
 import EmptyList from '~/components/EmptyList';
 import Header from '~/components/Header';
+import ConfirmBox from '~/components/ConfirmBox';
+import Pagination from '~/components/Pagination';
 
 import api from '~/services/api';
 import history from '~/services/history';
 
 export default function Orders() {
+  const labels = [
+    'ID',
+    'Produto',
+    'Detinatário',
+    'Entregador',
+    'Cidade',
+    'Estado',
+    'Status',
+    'Ações',
+  ];
+
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [product, setProduct] = useState('');
+  const [lengthOrders, setLengthOrders] = useState(0);
+
+  async function loadOrders(page) {
+    setLoading(true);
+    const response = await api.get(`/orders?product=${product}`, {
+      params: {
+        page,
+      },
+    });
+
+    const data = response.data.map(order => ({
+      ...order,
+      disabled: order.end_date,
+    }));
+
+    setLengthOrders(response.data.length);
+    setOrders(data);
+    setLoading(false);
+  }
 
   useEffect(() => {
-    async function loadOrders() {
-      setLoading(true);
-      const response = await api.get(`/orders?product=${product}`);
+    loadOrders(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-      const data = response.data.map(order => ({
-        ...order,
-        disabled: order.end_date,
-      }));
-
-      setOrders(data);
-      setLoading(false);
-    }
-    loadOrders();
-  }, [product]);
+  function handleDelete(id) {
+    confirmAlert({
+      // eslint-disable-next-line react/prop-types
+      customUI: ({ onClose }) => (
+        <ConfirmBox
+          onClose={onClose}
+          handleConfirm={async () => {
+            try {
+              const response = await api.delete(`/orders/${id}`);
+              setOrders(orders.filter(order => order.id !== id));
+              toast.success(response.data.msg);
+              onClose();
+            } catch ({ response }) {
+              toast.error(response.data.error);
+              onClose();
+            }
+          }}
+        />
+      ),
+    });
+  }
 
   function handleNavigate() {
     history.push('/orders/new');
@@ -49,7 +94,7 @@ export default function Orders() {
             <input
               onChange={e => setProduct(e.target.value)}
               type="text"
-              placeholder="Buscar por encomendas"
+              placeholder="Buscar por Encomendas"
             />
           </div>
           <button onClick={handleNavigate} type="button">
@@ -67,41 +112,23 @@ export default function Orders() {
             <>
               <thead>
                 <tr>
-                  <th>
-                    <strong>ID</strong>
-                  </th>
-                  <th>Produto</th>
-                  <th>
-                    <strong>Detinatário</strong>
-                  </th>
-                  <th>
-                    <strong>Entregador</strong>
-                  </th>
-                  <th>
-                    <strong>Cidade</strong>
-                  </th>
-                  <th>
-                    <strong>Estado</strong>
-                  </th>
-                  <th>
-                    <strong>Status</strong>
-                  </th>
-                  <th>
-                    <div>
-                      <strong>Ações</strong>
-                    </div>
-                  </th>
+                  {labels.map(label => (
+                    <th key={label}>
+                      <strong>{label}</strong>
+                    </th>
+                  ))}
                 </tr>
               </thead>
 
-              {!orders.length ? (
-                <strong>não há encomendas cadastradas</strong>
-              ) : (
-                <OrderItem orders={orders} />
-              )}
+              {orders.map(order => (
+                <OrderItem order={order} onDelete={handleDelete} />
+              ))}
             </>
           )}
         </table>
+      )}
+      {orders.length > 0 && (
+        <Pagination loadItems={loadOrders} itemsLenght={lengthOrders} />
       )}
     </Container>
   );

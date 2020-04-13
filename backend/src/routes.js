@@ -10,11 +10,12 @@ import FileController from './app/controllers/FileController';
 import DeliverymanController from './app/controllers/DeliverymanController';
 import Ordercontroller from './app/controllers/Ordercontroller';
 import DashboardController from './app/controllers/DashboardController';
-
-import multerConfig from './config/multer';
 import DeliveryiesController from './app/controllers/DeliveryiesController';
 import FinishDeliveryController from './app/controllers/FinishDeliveryController';
-import DeliveyProblemsController from './app/controllers/DeliveyProblemsController';
+import ProblemsController from './app/controllers/ProblemsController';
+import DeliveryProblemsController from './app/controllers/DeliveryProblemsController';
+
+import multerConfig from './config/multer';
 
 const routes = new Router();
 const upload = multer(multerConfig);
@@ -32,6 +33,8 @@ routes.post('/files', upload.single('file'), FileController.store);
 routes.get('/deliverymen/:id/orders', DashboardController.index);
 routes.get('/deliverymen/:id/orders/:orderId', DashboardController.show);
 
+routes.get('/deliverymen/:deliverymanId', DeliverymanController.show);
+
 // Deliveries from deliverymen
 routes.get('/deliverymen/:id/deliveries', DeliveryiesController.index);
 routes.put(
@@ -45,14 +48,17 @@ routes.put(
 );
 
 // Problems routes
-routes.get('/delivery/:id/problems', DeliveyProblemsController.show);
-routes.post('/delivery/:id/problems', DeliveyProblemsController.store);
+routes.post('/delivery/:id/problems', ProblemsController.store);
+routes.get('/delivery/:id/problems', DeliveryProblemsController.index);
 
-routes.get('/problems', DeliveyProblemsController.index);
-routes.delete('/problems/:id/cancel', DeliveyProblemsController.delete);
+routes.get('/problems', ProblemsController.index);
+routes.get('/problems/:id/', ProblemsController.show);
 
 // Authenticate routes
 routes.use(authMiddleware);
+
+// Auth Problem routes
+routes.delete('/problems/:id/cancel', ProblemsController.delete);
 
 // CRUD recipients routes
 routes.get('/recipients', RecipientController.index);
@@ -65,7 +71,6 @@ routes.delete('/recipients/:recipientId', RecipientController.delete);
 
 // CRUD deliverymen routes
 routes.get('/deliverymen', DeliverymanController.index);
-routes.get('/deliverymen/:deliverymanId', DeliverymanController.show);
 
 routes.post('/deliverymen', DeliverymanController.store);
 
@@ -73,6 +78,7 @@ routes.put('/deliverymen/:deliverymanId', DeliverymanController.update);
 routes.delete('/deliverymen/:deliverymanId', DeliverymanController.delete);
 
 // CRUD orders routes
+
 routes.get('/orders', Ordercontroller.index);
 routes.get('/orders/:id', Ordercontroller.show);
 
